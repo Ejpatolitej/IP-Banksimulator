@@ -13,26 +13,16 @@ namespace Individuellt_Projekt_Banksimulator
 
             Console.WriteLine("\t\t\"" + welcomePhrase[(index)] + "\"");
         }
-        static void AccountLayout(int userArray, string name, string pin, string acc1, string acc1Val, string acc2, string acc2Val)
-        {
-            Console.WriteLine("Användarnamn: " + name);
-            Console.WriteLine("Användarpin: " + pin);
-            for (int i = 2; i < userArray; i++)
-            {
-                Console.WriteLine();
-            }
-
-        }
         static void Main(string[] args)
         {
             //En lista på användare, pin, konto, och värden på konton
             List<string[]> users = new List<string[]>
             {
-                new string[] {"Jack", "1337", "Sparkonto", "5.00", "Matkonto", "50000.00"},
-                new string[] {"Emile", "6969", "Sparkonto", "20000.00", "ICE", "17500.00", "Nöje", "100000.00", "McDonalds", "500.00"},
-                new string[] {"Jonathan", "1234", "Sparkonto", "-35000.25", "Fakturor", "0.00", "Matkonto", "3000.00"},
-                new string[] {"Emma", "7946", "Sparkonto", "1000000.00", "Annat", "75000.00"},
-                new string[] {"Alice", "1996", "Sparkonto", "32495.30", "Hästen", "8300.00", "ICE", "15342.00", "Tomt", "0.00"}
+                new string[] {"Jack", "1337", "Sparkonto", "5,00", "Matkonto", "50000,00"},
+                new string[] {"Emile", "6969", "Sparkonto", "20000,00", "ICE", "17500,00", "Nöje", "100000,00", "McDonalds", "500,00"},
+                new string[] {"Jonathan", "1234", "Sparkonto", "-35000,25", "Fakturor", "0,00", "Matkonto", "3000,00"},
+                new string[] {"Emma", "7946", "Sparkonto", "1000000,00", "Annat", "75000,00"},
+                new string[] {"Alice", "1996", "Sparkonto", "32495,30", "Hästen", "8300,00", "ICE", "15342,00", "Tomt", "0,00"}
             };
 
             Console.WriteLine("                    Välkommen till");
@@ -85,35 +75,88 @@ namespace Individuellt_Projekt_Banksimulator
                                     Console.Clear();
                                     Console.WriteLine("____MENY____ ");
                                     Console.WriteLine("1. Se dina konton och saldo");
-                                    Console.WriteLine("2.Överföring mellan konton");
-                                    Console.WriteLine("3.Ta ut pengar");
-                                    Console.WriteLine("4.Logga ut och stäng av");
+                                    Console.WriteLine("2. Överföring mellan konton");
+                                    Console.WriteLine("3. Ta ut pengar");
+                                    Console.WriteLine("4. Logga ut och stäng av");
                                     Console.Write("Val: ");
                                     string menuChoice = Console.ReadLine();
 
                                     switch (menuChoice)
                                     {
                                         case "1":
-                                            //AccountLayout(userArray.Length, userArray[0], userArray[1], userArray[3], userArray[4], userArray[5], userArray[6], userArray[7]);
-
+                                            Console.Clear();
                                             Console.WriteLine("Användarnamn: " + userLogin);
                                             Console.WriteLine("Användarpin: " + pin);
-                                            for (int j = 2; j < userArray.Length; j++)
+                                            int count = 1;
+                                            for (int j = 2; j < userArray.Length; j = j + 2)
                                             {
-                                                Console.WriteLine(userArray[j]);
+                                                Console.WriteLine(count++ + ". " + userArray[j] + ": " + userArray[j + 1]);
                                             }
                                             Console.ReadKey();
                                             break;
+
                                         case "2":
+                                            Console.Clear();
                                             Console.WriteLine("Välj ett konto att flytta från");
-                                            for (int j = 2; j < userArray.Length; j++)
+                                            count = 1;
+                                            for (int j = 2; j < userArray.Length; j=j+2)
                                             {
-                                                Console.WriteLine(userArray[j]);
+                                                Console.WriteLine(count++ + ". " + userArray[j] + ": " + userArray[j+1]);
                                             }
-                                            string transferFrom = Console.ReadLine();
+                                            int transferFrom = Int32.Parse(Console.ReadLine());
+                                            double balanceFrom = Double.Parse(userArray[transferFrom * 2 + 1]);
+                                            Console.Clear();
+                                            Console.WriteLine("Välj ett konto att flytta till");
+                                            count = 1;
+                                            for (int j = 2; j < userArray.Length; j = j + 2)
+                                            {
+                                                Console.WriteLine(count++ + ". " + userArray[j] + ": " + userArray[j + 1]);
+                                            }
+                                            int transferTo = Int32.Parse(Console.ReadLine());
+                                            double balanceTo = Double.Parse(userArray[transferTo * 2 + 1]);
+                                            double transferAmount = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("Välj belopp att flytta");
+                                                transferAmount = Double.Parse(Console.ReadLine());
+                                                if (transferAmount > balanceFrom || transferAmount < 0)
+                                                {
+                                                    Console.WriteLine("Inte tillräckligt med saldo på kontot. Försök igen!");
+                                                    Console.ReadKey();
+                                                }
+                                            } while (transferAmount > balanceFrom || transferAmount < 0);
+                                            balanceFrom -= transferAmount;
+                                            balanceTo += transferAmount;
+                                            userArray[transferTo * 2 + 1] = balanceTo.ToString();
+                                            userArray[transferFrom * 2 + 1] = balanceFrom.ToString();
 
                                             break;
                                         case "3":
+                                            Console.Clear();
+                                            Console.WriteLine("Välj ett konto att ta ut pengar från");
+                                            count = 1;
+                                            for (int j = 2; j < userArray.Length; j = j + 2)
+                                            {
+                                                Console.WriteLine(count++ + ". " + userArray[j] + ": " + userArray[j + 1]);
+                                            }
+                                            int withdraw = Int32.Parse(Console.ReadLine());
+                                            double accountBalance = Double.Parse(userArray[withdraw * 2 + 1]);
+                                            double withdrawAmount = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("Välj belopp att ta ut");
+                                                withdrawAmount = Double.Parse(Console.ReadLine());
+                                                if (withdrawAmount > accountBalance || withdrawAmount < 0)
+                                                {
+                                                    Console.WriteLine("Inte tillräckligt med saldo på kontot. Försök igen!");
+                                                    Console.ReadKey();
+                                                }
+                                            } while (withdrawAmount > accountBalance || withdrawAmount < 0);
+                                            accountBalance -= withdrawAmount;
+                                            userArray[withdraw * 2 + 1] = accountBalance.ToString();
+
                                             break;
                                         case "4":
                                             Console.Clear();
@@ -137,18 +180,15 @@ namespace Individuellt_Projekt_Banksimulator
                         {
                             Console.Clear();
                             Console.WriteLine("Du har skrivit fel pin för många gånger. Programmet avslutas.");
+                            Console.ReadKey();
+                            Environment.Exit(0);
                         }
                     }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Hittar inte användare, försök igen!");
-                        break;
-                    }
-
                 }
+                Console.Clear();
+                Console.WriteLine("Hittar inte användaren. Försök igen!");
+                Console.ReadKey();
             }
-
         }
     }
 }
