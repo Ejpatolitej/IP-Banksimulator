@@ -30,6 +30,7 @@ Har som sagt haft ett par tuffa veckor, dålig ursäkt, men kändes inte som pri
 Jag hade definitivt möjlighet att slänga in fler saker från extrautmaningarna, så som att sätta in pengar. Den metoden har jag i stort sett redan, bara att ändra uttag till
 insättning, så det kanske jag gör lite snabbt efter jag skrivit detta.
 Kan också lägga till att man får en timeout i 3 min om man skriver fel pin, borde bara vara att sätta in en Thread.Sleep i 3 min och se till att det loopar tillbaka till login.
+EDIT: La till insättning och att man får en timeout i 3 min.
 Som sagt så ville jag göra en klass för att lägga till användare, och då hade det inte varit några problem att lägga till det som en extrautmaning heller,
 men borde inte vara något problem nu heller. Eftersom jag använder en lista är den ju dynamisk. Då borde jag kunna lägga in det också som en del av användarmenyn.
 Så skapar den en ny array i min list, som lägger in användarnamn på första indexplatsen, pin på andra, och sen får man skriva in hur många konton man vill öppna.
