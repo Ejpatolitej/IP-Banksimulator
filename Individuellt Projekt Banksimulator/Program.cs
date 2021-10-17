@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Individuellt_Projekt_Banksimulator
 {
@@ -104,6 +105,51 @@ namespace Individuellt_Projekt_Banksimulator
             userArray[withdraw * 2 + 1] = accountBalance.ToString();
             Console.WriteLine("Nytt saldo: " + accountBalance);
         }
+        //Method for deposit money to account
+        static void AccountDeposit(string[] userArray, string pin)
+        {
+            string checkPin;
+            //Checks the user pin for security
+            do
+            {
+                Console.Clear();
+                Console.Write("Skriv in din pin: ");
+                checkPin = Console.ReadLine();
+                if (checkPin != pin)
+                {
+                    Console.WriteLine("Fel pin, försök igen!");
+                    Console.ReadKey();
+                }
+            } while (checkPin != pin);
+            Console.WriteLine("Välj ett konto att sätta in pengar på");
+            //Wanted a number in front of every account for readability, so added "count" as an int
+            int count = 1;
+            for (int j = 2; j < userArray.Length; j = j + 2)
+            {
+                Console.WriteLine(count++ + ". " + userArray[j] + ": " + userArray[j + 1]);
+            }
+            //Parse user input to int to use in array
+            int deposit = Int32.Parse(Console.ReadLine());
+            //Parse amount from string to double to use with math
+            double accountBalance = Double.Parse(userArray[deposit * 2 + 1]);
+            double depositAmount = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Välj belopp att sätta in");
+                depositAmount = Double.Parse(Console.ReadLine());
+                //Checks deposit amount is not less than zero
+                if (depositAmount < 0)
+                {
+                    Console.WriteLine("Kan inte sätta in mindre än 0. Försök igen!");
+                    Console.ReadKey();
+                }
+            } while (depositAmount < 0);
+            accountBalance += depositAmount;
+            //Transform amount back to string and put it back into the array
+            userArray[deposit * 2 + 1] = accountBalance.ToString();
+            Console.WriteLine("Nytt saldo: " + accountBalance);
+        }
         //Method for printing a random welcome message to the user
         static void WelcomePhrase()
         {
@@ -173,9 +219,9 @@ namespace Individuellt_Projekt_Banksimulator
                         checkLogin = false;
                         bool checkPin = false;
                         //The user inputs the pin, if the pin is wrong 3 times it terminates the program
-                        for (int i = 0; i < 4 && checkPin == false; i++)
+                        for (int i = 0; i < 3 && checkPin == false; i++)
                         {
-                            Console.Clear();
+                            //Console.Clear();
                             Console.Write("Skriv in din pinkod: ");
                             string pin = Console.ReadLine();
                             //Checks the second string in the user array against the pin entered
@@ -191,7 +237,8 @@ namespace Individuellt_Projekt_Banksimulator
                                     Console.WriteLine("1. Se dina konton och saldo");
                                     Console.WriteLine("2. Överföring mellan konton");
                                     Console.WriteLine("3. Ta ut pengar");
-                                    Console.WriteLine("4. Logga ut");
+                                    Console.WriteLine("4. Sätt in pengar");
+                                    Console.WriteLine("5. Logga ut");
                                     Console.Write("Val: ");
                                     string menuChoice = Console.ReadLine();
 
@@ -221,8 +268,16 @@ namespace Individuellt_Projekt_Banksimulator
                                             Console.ReadKey();
                                             break;
 
-                                        //Logs out the user
+                                        //Lets user depoist money to account
                                         case "4":
+                                            Console.Clear();
+                                            AccountDeposit(userArray, pin);
+                                            Console.WriteLine("\nKlicka på Enter för att komma tillbaka till menyn.");
+                                            Console.ReadKey();
+                                            break;
+
+                                        //Logs out the user
+                                        case "5":
                                             Console.Clear();
                                             Console.WriteLine("Loggar ut, tack för idag! och kom ihåg: ");
                                             Console.WriteLine();
@@ -250,9 +305,11 @@ namespace Individuellt_Projekt_Banksimulator
                         if (checkPin == false)
                         {
                             Console.Clear();
-                            Console.WriteLine("Du har skrivit fel pin för många gånger. Programmet avslutas.");
+                            Console.WriteLine("Du har skrivit fel pin för många gånger. Programmet är nu låst i 3 minuter.");
+                            checkLogin = true;
                             Console.ReadKey();
-                            Environment.Exit(0);
+                            //Program waits for 3 minutes
+                            Thread.Sleep(180000);
                         }
                     }
                 }
